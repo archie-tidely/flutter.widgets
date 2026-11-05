@@ -59,6 +59,24 @@ void main() {
       expect(find.text('b child'), findsOneWidget);
     });
 
+    testWidgets('is keyed only by user keys, not generated ones.',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: TreeView(
+          nodes: [
+            TreeNode(key: ValueKey('user'), content: Text('user')),
+            TreeNode(content: Text('generated')),
+          ],
+        ),
+      ));
+
+      final keys = tester
+          .widgetList<NodeWidget>(find.byType(NodeWidget))
+          .map((w) => w.key)
+          .toList();
+      expect(keys, [ValueKey<Key?>(ValueKey('user')), null]);
+    });
+
     testWidgets('moves its listener when it is reused for another node.',
         (WidgetTester tester) async {
       final controller = TreeController(allNodesExpanded: false);
