@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 
 import 'node_widget.dart';
+import 'primitives/key_provider.dart';
 import 'primitives/tree_controller.dart';
 import 'primitives/tree_node.dart';
 
@@ -18,6 +19,10 @@ Widget buildNodes(Iterable<TreeNode> nodes, double? indent,
     children: [
       for (var node in nodes)
         NodeWidget(
+          // Keeps each row's State with its node when the node list changes.
+          // Only user keys identify a node across rebuilds; generated keys
+          // are positional, so those rows stay unkeyed.
+          key: isGeneratedKey(node.key) ? null : ValueKey(node.key),
           treeNode: node,
           indent: indent,
           state: state,
